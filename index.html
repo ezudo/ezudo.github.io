@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fourfold trainer</title>
+		<style>
+			.wrapper {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				margin: 0 auto;
+				width: min-content;
+				justify-content: center;
+			}
+			
+			.debuff{
+				flex: 0 1;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+			.debuff img {
+				margin: 0 0 10px 0;
+				border: 10px solid white;
+			}
+			.debuff > p {
+				width: fit-content;
+				display: inline-block;
+				margin: 20px 0 5px 0;
+			}
+			
+			.position{
+				cursor: pointer;
+			}
+			.position:hover{
+				opacity: .8;
+			}
+			
+			.selectlocation {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				width: 600px;
+				height: 600px;
+				background: lightgray;
+			}
+			
+			.selectlocation .rowtop,
+			.selectlocation .rowbottom{
+				flex: 0 0 100%;
+				height: calc(270px/2);
+			}
+			
+			.selectlocation .rowcenter {
+				height: 330px;
+				width: 100%;
+				align-self: center;
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+			}
+			
+			.rowtop .tiles > div,
+			.rowbottom .tiles > div			{
+				background: #d36767;
+				width: 40%;
+				height: 40%;
+				position: absolute;
+				border-radius: 50%;
+			}
+			
+			.rowtop .tiles,
+			.rowbottom .tiles{
+				height: 100%;
+				width: 100%;
+				position: relative;
+			}
+			
+			.rowcenter .tiles {
+				height: 100%;
+				width: 330px;
+				position: relative;
+			}
+			.rowcenter .tiles > div {
+				background: #8c55b0;
+				width: 40%;
+				height: 40%;
+				position: absolute;
+				border-radius: 50%;
+			}
+			
+			.rowtop .tiles > div,
+			.rowbottom .tiles > div{
+				background: #d36767;
+				width: calc(200px*0.7);
+				height: calc(200px*0.7);
+				position: absolute;
+				border-radius: 50%;
+			}
+			
+			.rowcenter .tiles .a{ top: 0; left: 50%; transform: translateX(-50%); }
+			.rowcenter .tiles .b{ top: 50%; right: 0; transform: translateY(-50%); }
+			.rowcenter .tiles .c{ bottom: 0; left: 50%; transform: translateX(-50%); }
+			.rowcenter .tiles .d{ top: 50%; left: 0; transform: translateY(-50%); }
+			
+			.rowtop .tiles .one{ top: 40px; left: 40px}
+			.rowtop .tiles .two{ top: 40px; right: 40px }
+			.rowbottom .tiles .three{ bottom: 40px; right: 40px }
+			.rowbottom .tiles .four{ bottom: 40px; left: 40px }
+			
+			.position.incorrect{background: red!important;}
+			.position.correct{background: green!important;}
+		</style>
+	</head>
+	<body>
+
+		
+	<div class="wrapper">
+	
+		<div class="debuff">
+			<p>Debuff:</p>
+			<img id="debufficon" src="" />
+		</div>
+		
+		<div class="selectlocation">
+			<div class="rowtop">
+				<div class="tiles">
+					<div class="position one"></div>
+					<div class="position two"></div>
+				</div>
+			</div>
+			<div class="rowcenter">
+				<div class="tiles">
+					<div class="position a"></div>
+					<div class="position b"></div>
+					<div class="position c"></div>
+					<div class="position d"></div>
+				</div>
+			</div>
+			<div class="rowbottom">
+				<div class="tiles">
+					<div class="position four"></div>
+					<div class="position three"></div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+
+	</body>
+	
+	<script>
+		const debuffs = [ 
+			["3red", "one"], 
+			["3purple", "a"], 
+			["8red", "two"], 
+			["8purple", "b"], 
+			["13red", "three"], 
+			["13purple", "c"], 
+			["18red", "four"], 
+			["18purple", "d"]
+		];
+		
+		const delay = ms => new Promise(res => setTimeout(res, ms));
+		let randomdebuff = debuffs[Math.floor(Math.random()*debuffs.length)];
+		document.getElementById("debufficon").src = "img/" + randomdebuff[0] + ".png";
+		
+		const positions = document.querySelectorAll(".position");
+		for (i of positions) {
+		  i.addEventListener('click', function() {
+			if ( this.classList.contains(randomdebuff[1]) )
+			{
+				this.classList.add("correct"); 
+				document.getElementById("debufficon").style.border = "5px solid green";
+			} else {
+				this.classList.add("incorrect");
+				document.getElementById("debufficon").style.border = "5px solid red";
+			}
+			document.getElementById("debufficon").style.opacity = ".4";
+			shuffle();
+		  });
+		}
+		
+		const shuffle = async () => {
+			for (i of positions) {
+			  i.style.pointerEvents = "none";
+			}
+			await delay (600);
+			for (i of positions) {
+			  i.classList.remove("incorrect", "correct");
+			  i.style.pointerEvents = "auto";
+			}
+			randomdebuff = debuffs[Math.floor(Math.random()*debuffs.length)];
+			document.getElementById("debufficon").style.opacity = "1";
+			document.getElementById("debufficon").style.border = "5px solid white";
+			document.getElementById("debufficon").src = "img/" + randomdebuff[0] + ".png";
+		};
+	</script>
+</html>
